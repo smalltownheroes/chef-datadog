@@ -57,3 +57,140 @@ suites:
     datadog:
       api_key: somethingnotnil
       application_key: alsonotnil
+
+- name: integrations_apache
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[apache2]"
+    - "recipe[datadog::apache]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      apache:
+        instances:
+          - status_url: http://localhost/server-status/
+            tags:
+              - "test"
+    apache:
+      ext_status: true
+      status_allow_list: localhost ip6-localhost 127.0.0.1
+      default_site_enabled: true
+
+- name: integrations_mysql
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[mysql::server]"
+    - "recipe[datadog::mysql]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      mysql:
+        instances:
+          - server: localhost
+            user: root
+            pass: bar
+            tags:
+              - "test"
+              - "fun"
+            options:
+              - "replication: 0"
+    mysql:
+      server_debian_password: foo
+      server_root_password: bar
+      server_repl_password: baz
+      tunable:
+        innodb_buffer_pool_size: 1M
+
+- name: integrations_network
+  # not technically an integration, but allows modification of interfaces monitored
+  run_list:
+    - "recipe[datadog::network]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      network:
+        instances:
+          - collect_connection_state: false
+            excluded_interfaces:
+              - lo
+              - lo0
+              - eth0
+
+- name: integrations_nginx
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[nginx]"
+    - "recipe[nginx::http_stub_status_module]"
+    - "recipe[datadog::nginx]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      nginx:
+        instances:
+          - nginx_status_url: http://localhost:8090/nginx_status/
+            tags:
+              - "test"
+
+- name: integrations_redisdb
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[redisio::install]"
+    - "recipe[redisio::enable]"
+    - "recipe[datadog::redisdb]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      redis:
+        instances:
+          - server: localhost
+            port: 6379
+            tags:
+              - "test"
+
+- name: integrations_memcached
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[memcached::default]"
+    - "recipe[datadog::memcache]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      memcache:
+        instances:
+          - url: localhost
+            tags:
+              - "test"
+
+- name: integrations_postgres
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[postgresql::server]"
+    - "recipe[datadog::postgres]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      postgres:
+        instances:
+          - server: localhost
+            port: 5432
+            tags:
+              - "test"
+            username: postgres
+            password: foo
+    postgresql:
+      password:
+        postgres: foo
+
+- name: integrations_riak
+  run_list:
+    - "recipe[datadog::dd-agent]"
+    - "recipe[riak::default]"
+    - "recipe[datadog::riak]"
+  attributes:
+    datadog:
+      api_key: somethingnotnil
+      riak:
+        instances:
+          - url: http://10.0.2.15:8098/stats
+            tags:
+              - "test"

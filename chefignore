@@ -41,6 +41,7 @@ spec/fixtures/*
 features/*
 .chef/
 .kitchen/
+test/*
 
 ## SCM
 .gitignore

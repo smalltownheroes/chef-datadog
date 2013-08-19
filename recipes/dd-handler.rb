@@ -31,7 +31,10 @@ if(Gem::Version.new(Chef::VERSION) < Gem::Version.new('0.10.9'))
   Gem.clear_paths
 else
   # The chef_gem provider was introduced in Chef 0.10.10
-  chef_gem "chef-handler-datadog"
+  chef_gem "chef-handler-datadog" do
+    action :install
+    version nil
+  end
 end
 require 'chef/handler/datadog'
 
